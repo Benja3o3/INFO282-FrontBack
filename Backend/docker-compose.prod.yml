@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  api:
+    build:
+      target: production
+    command: node build/index.js
+  daemon:
+    volumes:
+      - sources_files:/daemon/Source:ro

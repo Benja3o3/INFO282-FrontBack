@@ -1,0 +1,101 @@
+version: "3.8"
+
+    
+networks:
+  filetransfer:
+
+volumes:
+  sources_files:
+    driver: local
+    external: false
+
+services:
+  api:
+    build:
+      context: ./app/
+      dockerfile: Dockerfile
+      target: base
+    restart: always
+    volumes:
+      - ./app/src:/home/node/app/src
+    environment:
+      - HOST=databases
+      - PORT=5432
+      - USER=uach
+      - PASSWORD=uachbienestar2023
+      - PROCESSINGDB=db_processing
+      - TRANSACTIONALDB=db_transactional
+    container_name: api
+    expose:
+      - '5002'
+    ports:
+      - '5002:5002'
+    networks:
+      - filetransfer
+    command: npm run dev
+    
+  databases:
+    build: ./databases/
+    container_name: databases
+    restart: always
+    environment:
+      - DATABASE_HOST=127.0.0.1
+      - POSTGRES_USER=uach
+      - POSTGRES_PASSWORD=uachbienestar2023
+    networks:
+      - filetransfer
+    ports: 
+      - "3310:5432"
+    volumes:
+      - ./databases/jsonFiles/:/docker-entrypoint-initdb.d/jsonFiles/
+      - ./databases/01_db_transactional.sql:/docker-entrypoint-initdb.d/01_db_transactional.sql
+      - ./databases/02_db_processing.sql:/docker-entrypoint-initdb.d/02_db_processing.sql
+      - ./databases/03_db_fuentes.sql:/docker-entrypoint-initdb.d/03_db_fuentes.sql
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment: 
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "3380:80"
+    networks:
+      - filetransfer
+    depends_on:
+      - databases
+
+  daemon:
+    build:
+      context: ./daemon/
+      dockerfile: Dockerfile
+    restart: always
+    container_name: daemon
+    networks:
+      - filetransfer
+    volumes:
+      - ./daemon/Source:/daemon/Source
+      - ./daemon/src/etls:/daemon/src/etls
+      - sources_files:/daemon/Source:ro
+      - ./daemon/backup:/daemon/backup
+
+    environment:
+      HOST: databases
+      PORT: 5432
+      USER: uach
+      PASSWORD: uachbienestar2023
+
+  ftp:
+    build:
+      context: ./ftp/
+      dockerfile: Dockerfile
+    container_name: ftp
+    ports:
+      - "20:20"
+      - "21:21"
+      - "47400-47470:47400-47470"
+    environment:
+      - FTP_USER=uach
+      - FTP_PASS=uachbienestar2023
+      - PASV_ADDRESS=127.0.0.1
+    volumes:
+      - sources_files:/home/vsftpd
