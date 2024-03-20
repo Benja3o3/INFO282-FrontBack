@@ -2,7 +2,7 @@
 ## Despliegue de barometro de bienestar
 > Para desplegar el backed del sistema, se debe tener instalado docker con las imagenes de "Postgress" y "pgadmin" 
 
-En consola dentro de la carpeta raiz se debe iniciar con 
+En consola dentro de la carpeta Backend se debe iniciar con 
 
 
 Develop:
@@ -59,6 +59,8 @@ siguientes datos
 
 
 # Despliegue Frontend
+
+Ubicarse en la carpeta Frontend y ejecutar el despliegue en modo:
 
 develop:
 ``` 
