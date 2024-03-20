@@ -1,16 +1,3 @@
-
-# Despliegue Frontend
-
-develop:
-``` 
-    docker-compose -f docker-compose.dev.yml up -d
-```
-
-deploy:
-``` 
-    docker-compose up -d
-```
-
 # Despliegue Backend
 ## Despliegue de barometro de bienestar
 > Para desplegar el backed del sistema, se debe tener instalado docker con las imagenes de "Postgress" y "pgadmin" 
@@ -58,4 +45,22 @@ siguientes datos
     nombreusuario:  alpineftp
     contraseña:     alpineftp
     puerto:         21
+```
+En el contenedor del backend, en la consola del cron (deamon) ejecutar
+``` bash
+    python3 main.py
+```
+Para que se inicialicen los valores
+
+# Despliegue Frontend
+
+develop:
 ``` 
+    docker-compose -f docker-compose.dev.yml up -d
+```
+
+deploy:
+``` 
+    docker-compose up -d
+```
+
