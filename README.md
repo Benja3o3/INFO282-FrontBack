@@ -3,6 +3,8 @@
 > Para desplegar el backed del sistema, se debe tener instalado docker con las imagenes de "Postgress" y "pgadmin" 
 
 En consola dentro de la carpeta raiz se debe iniciar con 
+
+
 Develop:
 ``` bash
     docker-compose up --build
@@ -11,6 +13,12 @@ Deploy:
 ``` bash    
     docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d   
 ```
+
+En el contenedor del backend, en la consola del cron (deamon) ejecutar
+``` bash
+    python3 main.py
+```
+Para que se inicialicen los valores
 
 ## Visualización de base de datos mediante PGADMIN4
 Se debe ingresar al navegador mediante el url 
@@ -48,11 +56,7 @@ siguientes datos
     contraseña:     alpineftp
     puerto:         21
 ```
-En el contenedor del backend, en la consola del cron (deamon) ejecutar
-``` bash
-    python3 main.py
-```
-Para que se inicialicen los valores
+
 
 # Despliegue Frontend
 
