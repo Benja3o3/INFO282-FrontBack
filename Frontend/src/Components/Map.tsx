@@ -16,9 +16,30 @@ interface MapProps {
 
 const handleMouseOver = (e: L.LeafletMouseEvent) => {
   const layer = e.target as L.GeoJSON;
-  if (layer.feature && "properties" in layer.feature && layer.feature.properties.Comuna) {
-    const nombreComuna = layer.feature.properties.Comuna;
-    layer.bindTooltip(nombreComuna, { permanent: false, direction: "center" }).openTooltip();
+  let content = "";
+
+  if (layer.feature && "properties" in layer.feature) {
+    if (layer.feature.properties.Comuna) {
+      content = layer.feature.properties.Comuna;
+    } else if (layer.feature.properties.Region) {
+      content = layer.feature.properties.Region;
+    } else if (layer.feature.properties.COUNTRY) {
+      content = layer.feature.properties.COUNTRY;
+    } 
+  }
+
+  if (content) {
+    // Calcular el tamaño del tooltip para centrarlo correctamente
+    const tooltipWidth = content.length * 5; // Ajusta según sea necesario
+
+    // Calcular la posición del centro
+    const xOffset = -tooltipWidth / 2;
+    const yOffset = 0;
+
+    layer.bindTooltip(content, {
+      permanent: false,
+      offset: [xOffset, yOffset],
+    }).openTooltip();
   }
 };
 
@@ -37,9 +58,12 @@ export default function Map({ onNameMapChange }: MapProps) {
   );
 
   const [bienestarRegion, setBienestarRegion] = useState<any[]>();
-  const [bienestarComuna, setBienestarComuna] = useState<any[]>();
+  const [bienestarComuna, setBienestarComuna] = useState<any[]>([]);
   const [bienestarPais, setBienestarPais] = useState<any[]>();
   const [dataLoaded, setDataLoaded] = useState(false);
+
+
+
 
   useEffect(() => {
     Promise.all([
@@ -94,11 +118,11 @@ export default function Map({ onNameMapChange }: MapProps) {
       "#7cc200",
     ];
     const legendLabels = [
-      "[0.00-0.17[",
-      "[0.17-0.33[",
+      "[0.00-0.42[",
+      "[0.17-0.47[",
       "[0.33-0.50[",
-      "[0.50-0.67[",
-      "[0.67-0.83[",
+      "[0.50-0.53[",
+      "[0.67-0.57[",
       "[0.83-1.00]",
     ];
 
@@ -135,6 +159,7 @@ export default function Map({ onNameMapChange }: MapProps) {
   }, []);
 
   const handleLayerClick = (e: any, prop: string) => {
+
     const value =
       {
         pais: "COUNTRY",
@@ -244,7 +269,7 @@ export default function Map({ onNameMapChange }: MapProps) {
   }, [mapInstance, zoomCurrent]);
 
   const getColor = (progress: number) => {
-    const progressRanges = [0.0, 0.17, 0.33, 0.5, 0.67, 0.83, 1.0];
+    const progressRanges = [0.0, 0.42, 0.47, 0.5, 0.53, 0.57, 1.0];
     let currentColor = COLOR_WELFARE[0]; // Color predeterminado
 
     for (let i = 0; i < progressRanges.length; i++) {
@@ -278,9 +303,7 @@ export default function Map({ onNameMapChange }: MapProps) {
           );
           if (bienestarItem) {
             bienestar = bienestarItem.valor_bienestar;
-            console.log(
-              "Bienestar: " + bienestarItem.valor_bienestar.toFixed(3)
-            );
+
           }
         } else if (propName == "pais") {
           bienestar = bienestarPais[0].valor_bienestar;
@@ -295,7 +318,71 @@ export default function Map({ onNameMapChange }: MapProps) {
         });
       });
     }
+    
   }, [dataLoaded, layer, mapInstance]);
+  // //Busqueda
+  // const [searchResult, setSearchResult] = useState<any | null>(null);
+  // const [searchInput, setSearchInput] = useState<any| null>(null);
+  
+  // const searchComunaByNombre = (nombre_comuna: string) => {
+  //   const foundComuna = bienestarComuna.find(
+  //     (item: any) => item.nombre_comuna === nombre_comuna
+  //   );
+  
+  //   setSearchResult(foundComuna || null);
+  //   console.log(foundComuna);
+  // };
+  
 
-  return <div id="map" className="h-full w-full rounded-lg" />;
+  // const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSearchInput(e.target.value);
+  // };
+
+  // const handleSearchButtonClick = () => {
+  //   const comunaNombre = searchInput.toLowerCase(); // Convierte a minúsculas
+  
+  //   const foundComuna = bienestarComuna.find(
+  //     (item: any) => item.nombre_comuna.toLowerCase() === comunaNombre
+  //   );
+  
+  //   infoInstance.update = function () {
+  //     infoInstance._div.innerHTML = `<h4>Información</h4><b>${foundComuna.nombre_comuna}</b>`;
+  //   };
+  //   infoInstance.addTo(mapInstance);
+
+  //   let foundLayer = null;
+
+  //   mapInstance.eachLayer((layer) => {
+  //     if (layer instanceof L.GeoJSON) { // Verifica si es una capa GeoJSON
+  //       layer.eachLayer((geojsonLayer) => {
+  //         const feature = geojsonLayer.feature;
+  //         if (feature.properties.Comuna.toLowerCase() === foundComuna.nombre_comuna.toLowerCase() ) {
+  //           foundLayer = geojsonLayer;
+  //         }
+  //       });
+  //     }
+  //   });
+
+  //   if (foundLayer) {
+  //     const syntheticEvent = {
+  //       layer: foundLayer,
+  //     };
+  
+  //     handleLayerClick(syntheticEvent, propName);
+  //   }
+  // };
+
+  return (
+  <>
+{/* <input
+  type="text"
+  placeholder="Ingrese Comuna"
+  value={searchInput}
+  onChange={handleSearchInputChange}
+  onKeyDown={(e) => e.key === "Enter" && handleSearchButtonClick()}
+/>
+<button onClick={handleSearchButtonClick}>Buscar</button> */}
+  <div id="map" className="h-full w-full rounded-lg" />
+  </>
+  );
 }

@@ -4,12 +4,16 @@ import IndicatorTable from "./Components/IndicatorTable.tsx";
 import { useEffect, useState } from "react";
 import Barometer from "./Components/Barometer.tsx";
 import config from "./config.ts";
+import Header from "./Components/Header.tsx";
 
 export default function App() {
   const [selectCut, setSelectCut] = useState(0);
   const [type, setType] = useState("pais");
   const [bienestar, setBienestar] = useState(0);
   const [category, setCategory] = useState("");
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
 
   const handleNameMapChange = (
     cut: number,
@@ -32,26 +36,47 @@ export default function App() {
       .then((json) => setBienestar(json[0].valor_bienestar));
   }, []);
 
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+  const umbralAnchoVentana = 1240; 
+
   return (
-    <div className="grid grid-cols-[1fr,1fr,2fr] gap-2 h-screen">
-      <div className="bg-slate-200 rounded-lg">
-        <IndicatorTable
-          cut={selectCut}
-          type={type}
-          onButtonCategoryChange={handleButtonCategoryChange}
-        />
+    <>
+      <div className="overflow-hidden">
+        <Header></Header>
+        <div className="w-full h-screen bg-back object-cover flex item-center">
+          <IndicatorTable
+              cut={selectCut}
+              type={type}
+              onButtonCategoryChange={handleButtonCategoryChange} />
+          <Charts cut={selectCut} type={type} category={category} />
+
+          <Map onNameMapChange={handleNameMapChange} />
+         
+
+        </div>
+
       </div>
 
-      <div className="bg-slate-200 rounded-lg">
-        <Charts cut={selectCut} type={type} category={category} />
-      </div>
-      <div className="z-0">
-        <Map onNameMapChange={handleNameMapChange} />
-      </div>
-      <div className="absolute bottom-0 mb-2 right-[33%] rounded-lg p-2 bg-white">
-        <Barometer radius={100} numberOfSections={6} value={bienestar} />
-        <h1 className="text-center font-semibold">BAROMETRO</h1>
-      </div>
-    </div>
-  );
+      {windowWidth > umbralAnchoVentana && (
+        <div className="absolute bottom-0 mb-2 left-1/2 transform -translate-x-1/2 rounded-lg p-2" style={{ zIndex: 9999 }}>
+          <div style={{ padding: '10px', borderRadius: '10px' }}>
+            <Barometer radius={100} numberOfSections={6} value={bienestar} />
+            <h1 className="text-center font-roboto font-bold rounded-lg bg-white shadow-md">BAROMETRO</h1>
+          </div>
+        </div>
+      )}
+      </>
+      );
 }
+
