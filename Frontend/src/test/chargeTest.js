@@ -44,4 +44,6 @@ const url = "http://localhost:4001";
 const numUsers = 10;
 
 // Ejecutar la prueba de carga
-loadTest(url, numUsers);
+//loadTest(url, numUsers);
+
+
