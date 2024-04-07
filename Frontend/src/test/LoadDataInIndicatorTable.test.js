@@ -42,3 +42,5 @@ async function runTest() {
 }
 
 runTest();
+
+/* Requisito no funcional: Tiempo que tarda en cargar los datos de los indicadores al clickear una region */
