@@ -12,7 +12,8 @@
         "server:build": "babel --verbose --out-dir dist/server src/server",
         "client:build": "vite build",
         "start": "node dist/server/index.js",
-        "test": "node src/test/chargeTest.js"
+        "testrnf": "node src/test/chargeTest.js",
+        "testrf": "node src/test/dimensionInformationTest.js"
     },
     "dependencies": {
         "@react-leaflet/core": "^2.1.0",
