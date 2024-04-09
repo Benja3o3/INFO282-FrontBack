@@ -34,16 +34,12 @@ Este documento describe los pasos necesarios para ejecutar un test automatizado 
 
 1. Abre tu editor de código o un terminal y copia el siguiente código JavaScript en un archivo con extensión `.js`, por ejemplo, `test.js`.
 
-2. Abre una terminal y navega hasta la ruta src/test donde se encuentra el archivo `ExportData.test.js` y `LoadDataInIndicatorTable.test.js`.
+2. Abre una terminal y navega hasta la ruta src/test donde se encuentra el archivo `ExportData.test.js` y `LoadDataInChart.test.js`.
 
 3. Ejecuta el test automatizado ejecutando el siguiente comando:
 
    ```bash
-   node ExportData.test.js
-   ```
-
-   ```bash
-   node LoadDataInIndicatorTable.test.js
+   npm run test
    ```
 
 4. El test automatizado se ejecutará y proporcionará la salida correspondiente en la terminal, indicando si el test fue exitoso o si se encontraron errores durante la ejecución.
