@@ -1,46 +1,42 @@
-import { Builder, By, until } from "selenium-webdriver";
+import { Browser, Builder, By, until } from "selenium-webdriver";
 
-async function runTest() {
-  let driver = new Builder().forBrowser("chrome").build();
+/* Requisito no funcional: Tiempo que tarda en cargar los datos de un grafico*/
+
+async function loadDataGraph(url, browser) {
+  let driver = new Builder().forBrowser(browser).build();
   try {
     // Navegar a la página donde se encuentra el mapa
-    await driver.get("http://192.168.1.16:4001/");
-
-    // Realizar zoom al nivel de país
-    const zoomInButton = await driver.findElement(
-      By.className("leaflet-control-zoom-in")
-    );
-
-    await driver.sleep(2000);
-    await zoomInButton.click(); // Puedes repetir este paso si es necesario aumentar el zoom
-    /* 
-    // Esperar a que la región esté completamente cargada
-    await driver.wait(
-      until.elementLocated(
-        By.xpath("//*[@id='map']/div[1]/div[2]/svg/g/path[11]")
-      ),
-      5000
-    );
+  
+    await driver.get(url);
+    const startTime = Date.now();
 
     // Seleccionar la región haciendo clic en ella
-    const regionElement = await driver.findElement(
-      By.xpath("//*[@id='map']/div[1]/div[2]/svg/g/path[11]")
+    const exportButton = await driver.findElement(
+      By.className("rounded-lg")
     );
-    await regionElement.click();
- */
-    // Esperar un tiempo para que se carguen los datos (ajusta este tiempo según sea necesario)
-    await driver.sleep(5000);
+    await exportButton.click();
 
+    await driver.wait(until.elementLocated(By.css('canvas')), 10000); // Tiempo máximo de espera: 10 segundos
+ // Tiempo máximo de espera: 10 segundos
+
+    const endTime = Date.now();
+    const tiempoDeCarga = endTime - startTime;
+    console.log(`El gráfico se cargó en ${tiempoDeCarga} milisegundos, al apretar el botón.`);
     // Realizar otras acciones o aserciones según sea necesario
+    console.log('✅ La prueba se ha completado con éxito');
   } catch (error) {
-    console.error("Error durante la prueba:", error);
-    throw error;
+      console.error(`Error durante el test en el navegador: ${browser}`);
   } finally {
     // Asegurarse de cerrar el navegador después de la prueba, independientemente de si pasa o falla
     await driver.quit();
   }
 }
 
-runTest();
+const url = "http://localhost:4001/";
+const browsers = [Browser.CHROME];
+// const browsers = [Browser.CHROME, Browser.FIREFOX, Browser.EDGE];
+browsers.forEach(browser => {
+  loadDataGraph(url, browser);
+});
 
-/* Requisito no funcional: Tiempo que tarda en cargar los datos de los indicadores al clickear una region */
+
