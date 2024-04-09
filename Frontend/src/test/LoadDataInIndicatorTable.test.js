@@ -23,7 +23,7 @@ async function loadDataGraph(url, browser) {
     const tiempoDeCarga = endTime - startTime;
     console.log(`El gráfico se cargó en ${tiempoDeCarga} milisegundos, al apretar el botón.`);
     // Realizar otras acciones o aserciones según sea necesario
-    console.log('✅ La prueba se ha completado con éxito');
+    console.log(`✅ La prueba se ha completado con éxito en el navegador: ${browser}`);
   } catch (error) {
       console.error(`Error durante el test en el navegador: ${browser}`);
   } finally {

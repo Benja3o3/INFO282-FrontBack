@@ -1,6 +1,5 @@
 import { Browser, Builder, By } from "selenium-webdriver";
 import fs from "fs";
-import path from "path";
 
 /* Requisito funciona: Como usuario quiero exportar los datos en un archiv kml */
 
@@ -22,7 +21,7 @@ async function exportData(url, browser, downloadsPath) {
 
     if (files.includes("allData.kml")) {
       console.log(`El archivo se descargó correctamente en ${downloadsPath}`);
-      console.log("✅ La prueba se ha completado con éxito");
+      console.log(`✅ La prueba se ha completado con éxito en el navegador: ${browser}`);
     } else {
       console.log(
         "Error durante el test: El archivo no se descargó correctamente."
