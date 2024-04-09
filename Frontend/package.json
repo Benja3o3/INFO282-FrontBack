@@ -13,7 +13,7 @@
     "client:build": "vite build",
     "start": "node dist/server/index.js",
     "test1": "node src/test/ExportData.test.js",
-    "test2": "node src/test/LoadDataInIndicatorTable.test.js",
+    "test2": "node src/test/LoadDataInChart.test.js",
     "test": "npm run test1 && npm run test2"
   },
   "dependencies": {
